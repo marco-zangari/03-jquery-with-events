@@ -40,12 +40,12 @@ articleView.handleAuthorFilter = function() {
 
     // TODO: If the select box was changed to an option that has a value, we need to hide all the articles,
       $('article').hide();
-      $('article[data-author="(this).val()"]').appendTo('body');
+      $('article[data-author="' + ($(this).val()) + '"]').fadeIn();
       //       and then show just the ones that match for the author that was selected.
       //       Use an "attribute selector" to find those articles, and fade them in for the reader.
 
     } else {
-      $('article').show();
+      $('article:not(.template)').fadeIn();
       // TODO: If the select box was changed to an option that is blank, we should
       //       show all the articles, except the one article we are using as a template.
 
@@ -55,6 +55,15 @@ articleView.handleAuthorFilter = function() {
 };
 
 articleView.handleCategoryFilter = function() {
+  $('#category-filter').on('change', function() {
+    if ($(this).val()){
+      $('article').hide();
+      $('article[data-category="' + ($(this).val()) + '"]').fadeIn();
+    }
+    else {
+      $('article:not(.template)').fadeIn();
+    }
+  })
   // TODO: Just like we do for #author-filter above, we should handle change events on the #category-filter element.
   //       When an option with a value is selected, hide all the articles, then reveal the matches.
   //       When the blank (default) option is selected, show all the articles, except for the template.
@@ -63,6 +72,10 @@ articleView.handleCategoryFilter = function() {
 };
 
 articleView.handleMainNav = function() {
+  $('.main-nav .tab').on('click', function(){
+    $('.tab-content').hide();
+    $('.tab-content[id="' + $(this).attr('data-content') + '"]').fadeIn();
+  })
   // TODO: Add an event handler to .main-nav elements that will power the Tabs feature.
   //       Clicking any .tab element should hide all the .tab-content sections, and then reveal the
   //       single .tab-content section that is associated with the clicked .tab element.
@@ -74,7 +87,10 @@ articleView.handleMainNav = function() {
 };
 
 articleView.setTeasers = function() {
-  $('.article-body *:nth-of-type(n+2)').hide(); // Hide elements beyond the first 2 in any article body.
+  $('.article-body *:nth-of-type(n+2)').hide();// Hide elements beyond the first 2 in any article body.
+  $('#articles').on('click', 'a.read-on', function(){
+    $(this).parent().find('.article-body *:nth-of-type(n+2)').show();
+  })
 
   // TODO: Add an event handler to reveal all the hidden elements,
   //       when the .read-on link is clicked. You can go ahead and hide the
@@ -90,4 +106,7 @@ articleView.setTeasers = function() {
 $(document).ready(function() {
   articleView.populateFilters();
   articleView.handleAuthorFilter();
+  articleView.handleCategoryFilter();
+  articleView.handleMainNav();
+  articleView.setTeasers();
 })
